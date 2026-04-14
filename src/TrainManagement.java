@@ -1,16 +1,13 @@
 /**
  * TrainManagement.java
  *
- * UC1 → UC6 Combined
+ * UC1 → UC7 Combined
  *
  * Description:
- * Demonstrates:
- * - Initialization (UC1)
- * - ArrayList operations (UC2)
- * - HashSet uniqueness (UC3)
- * - LinkedList ordering (UC4)
- * - LinkedHashSet (order + uniqueness) (UC5)
- * - HashMap (bogie → capacity mapping) (UC6)
+ * Demonstrates full Train Consist Management using:
+ * - ArrayList, HashSet, LinkedList, LinkedHashSet, HashMap
+ * - Custom Class (Bogie)
+ * - Comparator sorting (based on capacity)
  *
  * Author: Nitish
  */
@@ -19,94 +16,93 @@ import java.util.*;
 
 public class TrainManagement {
 
+    // ================= UC7: Bogie Class =================
+    static class Bogie {
+        String name;
+        int capacity;
+
+        // Constructor
+        Bogie(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
+        }
+
+        // toString for printing
+        @Override
+        public String toString() {
+            return name + " (" + capacity + ")";
+        }
+    }
+
     public static void main(String[] args) {
 
         // ================= UC1 =================
         System.out.println("=== Train Consist Management App ===");
 
         List<String> trainConsist = new ArrayList<>();
-        System.out.println("Train initialized successfully.");
         System.out.println("Initial number of bogies: " + trainConsist.size());
 
 
         // ================= UC2 =================
-        System.out.println("\n--- Adding Passenger Bogies ---");
-
         trainConsist.add("Sleeper");
         trainConsist.add("AC Chair");
         trainConsist.add("First Class");
-
-        System.out.println("Bogies after addition: " + trainConsist);
-
         trainConsist.remove("AC Chair");
-
-        if (trainConsist.contains("Sleeper")) {
-            System.out.println("Sleeper bogie exists in the train.");
-        }
-
-        System.out.println("Final train consist: " + trainConsist);
 
 
         // ================= UC3 =================
-        System.out.println("\n--- Tracking Unique Bogie IDs ---");
-
         Set<String> bogieIds = new HashSet<>();
         bogieIds.add("BG101");
-        bogieIds.add("BG102");
-        bogieIds.add("BG103");
-        bogieIds.add("BG101"); // duplicate
-
-        System.out.println("Unique Bogie IDs: " + bogieIds);
+        bogieIds.add("BG101"); // duplicate ignored
 
 
         // ================= UC4 =================
-        System.out.println("\n--- Maintaining Ordered Train Consist ---");
-
         LinkedList<String> orderedTrain = new LinkedList<>();
-
         orderedTrain.add("Engine");
         orderedTrain.add("Sleeper");
-        orderedTrain.add("AC");
         orderedTrain.add("Cargo");
         orderedTrain.add("Guard");
 
-        orderedTrain.add(2, "Pantry");
-
-        orderedTrain.removeFirst();
-        orderedTrain.removeLast();
-
-        System.out.println("Final Train Consist: " + orderedTrain);
-
 
         // ================= UC5 =================
-        System.out.println("\n--- LinkedHashSet: Order + Uniqueness ---");
-
         Set<String> formation = new LinkedHashSet<>();
-
         formation.add("Engine");
         formation.add("Sleeper");
-        formation.add("Cargo");
-        formation.add("Guard");
         formation.add("Sleeper"); // duplicate ignored
-
-        System.out.println("Final Train Formation: " + formation);
 
 
         // ================= UC6 =================
-        System.out.println("\n--- Mapping Bogie to Capacity ---");
-
-        // Step 1: Create HashMap
         Map<String, Integer> bogieCapacity = new HashMap<>();
-
-        // Step 2: Add bogie-capacity mapping
         bogieCapacity.put("Sleeper", 72);
         bogieCapacity.put("AC Chair", 50);
         bogieCapacity.put("First Class", 24);
 
-        // Step 3: Display mapping using entrySet()
-        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
-            System.out.println("Bogie: " + entry.getKey() +
-                    " | Capacity: " + entry.getValue());
+
+        // ================= UC7 =================
+        System.out.println("\n--- Sorting Bogies by Capacity ---");
+
+        // Step 1: Create list of Bogie objects
+        List<Bogie> bogies = new ArrayList<>();
+
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 50));
+        bogies.add(new Bogie("First Class", 24));
+
+        // Step 2: Sort using Comparator (ascending order)
+        bogies.sort(Comparator.comparingInt(b -> b.capacity));
+
+        // Step 3: Display sorted bogies
+        System.out.println("Bogies sorted by capacity (ascending):");
+        for (Bogie b : bogies) {
+            System.out.println(b);
+        }
+
+        // Step 4: Sort in descending order (important for viva)
+        bogies.sort((a, b) -> b.capacity - a.capacity);
+
+        System.out.println("\nBogies sorted by capacity (descending):");
+        for (Bogie b : bogies) {
+            System.out.println(b);
         }
 
         System.out.println("\nSystem ready for further operations...");

@@ -1,14 +1,15 @@
 /**
  * TrainManagement.java
  *
- * UC1 + UC2 + UC3 + UC4
+ * UC1 → UC5 Combined
  *
  * Description:
  * Demonstrates:
- * - Train initialization (UC1)
+ * - Initialization (UC1)
  * - ArrayList operations (UC2)
  * - HashSet uniqueness (UC3)
- * - LinkedList ordering & manipulation (UC4)
+ * - LinkedList ordering (UC4)
+ * - LinkedHashSet (order + uniqueness) (UC5)
  *
  * Author: Nitish
  */
@@ -37,7 +38,6 @@ public class TrainManagement {
         System.out.println("Bogies after addition: " + trainConsist);
 
         trainConsist.remove("AC Chair");
-        System.out.println("After removing AC Chair: " + trainConsist);
 
         if (trainConsist.contains("Sleeper")) {
             System.out.println("Sleeper bogie exists in the train.");
@@ -61,28 +61,39 @@ public class TrainManagement {
         // ================= UC4 =================
         System.out.println("\n--- Maintaining Ordered Train Consist ---");
 
-        // Step 1: Create LinkedList
         LinkedList<String> orderedTrain = new LinkedList<>();
 
-        // Step 2: Add bogies in sequence
         orderedTrain.add("Engine");
         orderedTrain.add("Sleeper");
         orderedTrain.add("AC");
         orderedTrain.add("Cargo");
         orderedTrain.add("Guard");
 
-        System.out.println("Initial Train: " + orderedTrain);
-
-        // Step 3: Insert Pantry Car at position 2
         orderedTrain.add(2, "Pantry");
-        System.out.println("After adding Pantry at position 2: " + orderedTrain);
 
-        // Step 4: Remove first and last bogie
         orderedTrain.removeFirst();
         orderedTrain.removeLast();
 
-        // Step 5: Final ordered train
         System.out.println("Final Train Consist: " + orderedTrain);
+
+
+        // ================= UC5 =================
+        System.out.println("\n--- LinkedHashSet: Order + Uniqueness ---");
+
+        // Step 1: Create LinkedHashSet
+        Set<String> formation = new LinkedHashSet<>();
+
+        // Step 2: Add bogies
+        formation.add("Engine");
+        formation.add("Sleeper");
+        formation.add("Cargo");
+        formation.add("Guard");
+
+        // Step 3: Add duplicate intentionally
+        formation.add("Sleeper"); // duplicate (ignored)
+
+        // Step 4: Display final formation
+        System.out.println("Final Train Formation: " + formation);
 
         System.out.println("\nSystem ready for further operations...");
     }

@@ -1,7 +1,7 @@
 /**
  * TrainManagement.java
  *
- * UC1 → UC5 Combined
+ * UC1 → UC6 Combined
  *
  * Description:
  * Demonstrates:
@@ -10,6 +10,7 @@
  * - HashSet uniqueness (UC3)
  * - LinkedList ordering (UC4)
  * - LinkedHashSet (order + uniqueness) (UC5)
+ * - HashMap (bogie → capacity mapping) (UC6)
  *
  * Author: Nitish
  */
@@ -80,20 +81,33 @@ public class TrainManagement {
         // ================= UC5 =================
         System.out.println("\n--- LinkedHashSet: Order + Uniqueness ---");
 
-        // Step 1: Create LinkedHashSet
         Set<String> formation = new LinkedHashSet<>();
 
-        // Step 2: Add bogies
         formation.add("Engine");
         formation.add("Sleeper");
         formation.add("Cargo");
         formation.add("Guard");
+        formation.add("Sleeper"); // duplicate ignored
 
-        // Step 3: Add duplicate intentionally
-        formation.add("Sleeper"); // duplicate (ignored)
-
-        // Step 4: Display final formation
         System.out.println("Final Train Formation: " + formation);
+
+
+        // ================= UC6 =================
+        System.out.println("\n--- Mapping Bogie to Capacity ---");
+
+        // Step 1: Create HashMap
+        Map<String, Integer> bogieCapacity = new HashMap<>();
+
+        // Step 2: Add bogie-capacity mapping
+        bogieCapacity.put("Sleeper", 72);
+        bogieCapacity.put("AC Chair", 50);
+        bogieCapacity.put("First Class", 24);
+
+        // Step 3: Display mapping using entrySet()
+        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
+            System.out.println("Bogie: " + entry.getKey() +
+                    " | Capacity: " + entry.getValue());
+        }
 
         System.out.println("\nSystem ready for further operations...");
     }

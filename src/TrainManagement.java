@@ -1,28 +1,19 @@
 /**
  * TrainManagement.java
  *
- * UC1 + UC2 + UC3: Train Initialization, Passenger Bogies, Unique Bogie IDs
+ * UC1 + UC2 + UC3 + UC4
  *
  * Description:
- * This program simulates a Train Consist Management App.
- * It demonstrates:
- * - Train initialization
- * - Adding/removing passenger bogies (ArrayList)
- * - Ensuring unique bogie IDs (HashSet)
- *
- * Concepts Used:
- * - List (ArrayList)
- * - Set (HashSet)
- * - CRUD operations
- * - Uniqueness enforcement
+ * Demonstrates:
+ * - Train initialization (UC1)
+ * - ArrayList operations (UC2)
+ * - HashSet uniqueness (UC3)
+ * - LinkedList ordering & manipulation (UC4)
  *
  * Author: Nitish
  */
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TrainManagement {
 
@@ -32,7 +23,6 @@ public class TrainManagement {
         System.out.println("=== Train Consist Management App ===");
 
         List<String> trainConsist = new ArrayList<>();
-
         System.out.println("Train initialized successfully.");
         System.out.println("Initial number of bogies: " + trainConsist.size());
 
@@ -59,18 +49,40 @@ public class TrainManagement {
         // ================= UC3 =================
         System.out.println("\n--- Tracking Unique Bogie IDs ---");
 
-        // Step 1: Create HashSet for unique bogie IDs
         Set<String> bogieIds = new HashSet<>();
-
-        // Step 2: Add bogie IDs (with duplicates intentionally)
         bogieIds.add("BG101");
         bogieIds.add("BG102");
         bogieIds.add("BG103");
         bogieIds.add("BG101"); // duplicate
-        bogieIds.add("BG102"); // duplicate
 
-        // Step 3: Display unique bogie IDs
         System.out.println("Unique Bogie IDs: " + bogieIds);
+
+
+        // ================= UC4 =================
+        System.out.println("\n--- Maintaining Ordered Train Consist ---");
+
+        // Step 1: Create LinkedList
+        LinkedList<String> orderedTrain = new LinkedList<>();
+
+        // Step 2: Add bogies in sequence
+        orderedTrain.add("Engine");
+        orderedTrain.add("Sleeper");
+        orderedTrain.add("AC");
+        orderedTrain.add("Cargo");
+        orderedTrain.add("Guard");
+
+        System.out.println("Initial Train: " + orderedTrain);
+
+        // Step 3: Insert Pantry Car at position 2
+        orderedTrain.add(2, "Pantry");
+        System.out.println("After adding Pantry at position 2: " + orderedTrain);
+
+        // Step 4: Remove first and last bogie
+        orderedTrain.removeFirst();
+        orderedTrain.removeLast();
+
+        // Step 5: Final ordered train
+        System.out.println("Final Train Consist: " + orderedTrain);
 
         System.out.println("\nSystem ready for further operations...");
     }

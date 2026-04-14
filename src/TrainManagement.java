@@ -1,42 +1,77 @@
 /**
  * TrainManagement.java
  *
- * UC1: Initialize Train and Display Consist Summary
+ * UC1 + UC2 + UC3: Train Initialization, Passenger Bogies, Unique Bogie IDs
  *
  * Description:
- * This program simulates the initialization of a Train Consist Management App.
- * It demonstrates basic Java concepts like class structure, main method,
- * ArrayList usage, and console output.
+ * This program simulates a Train Consist Management App.
+ * It demonstrates:
+ * - Train initialization
+ * - Adding/removing passenger bogies (ArrayList)
+ * - Ensuring unique bogie IDs (HashSet)
+ *
+ * Concepts Used:
+ * - List (ArrayList)
+ * - Set (HashSet)
+ * - CRUD operations
+ * - Uniqueness enforcement
  *
  * Author: Nitish
  */
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TrainManagement {
 
-    /**
-     * Main method - Entry point of the Java application
-     * JVM starts execution from here.
-     *
-     * @param args Command line arguments
-     */
     public static void main(String[] args) {
 
-        // Step 1: Print welcome message
+        // ================= UC1 =================
         System.out.println("=== Train Consist Management App ===");
 
-        // Step 2: Initialize train consist using List (dynamic collection)
-        // Using ArrayList to allow dynamic addition of bogies later
         List<String> trainConsist = new ArrayList<>();
 
-        // Step 3: Display initial bogie count
-        // Since no bogies are added yet, size should be 0
         System.out.println("Train initialized successfully.");
         System.out.println("Initial number of bogies: " + trainConsist.size());
 
-        // Step 4: Program continues (placeholder for future use cases)
-        System.out.println("System ready for further operations...");
+
+        // ================= UC2 =================
+        System.out.println("\n--- Adding Passenger Bogies ---");
+
+        trainConsist.add("Sleeper");
+        trainConsist.add("AC Chair");
+        trainConsist.add("First Class");
+
+        System.out.println("Bogies after addition: " + trainConsist);
+
+        trainConsist.remove("AC Chair");
+        System.out.println("After removing AC Chair: " + trainConsist);
+
+        if (trainConsist.contains("Sleeper")) {
+            System.out.println("Sleeper bogie exists in the train.");
+        }
+
+        System.out.println("Final train consist: " + trainConsist);
+
+
+        // ================= UC3 =================
+        System.out.println("\n--- Tracking Unique Bogie IDs ---");
+
+        // Step 1: Create HashSet for unique bogie IDs
+        Set<String> bogieIds = new HashSet<>();
+
+        // Step 2: Add bogie IDs (with duplicates intentionally)
+        bogieIds.add("BG101");
+        bogieIds.add("BG102");
+        bogieIds.add("BG103");
+        bogieIds.add("BG101"); // duplicate
+        bogieIds.add("BG102"); // duplicate
+
+        // Step 3: Display unique bogie IDs
+        System.out.println("Unique Bogie IDs: " + bogieIds);
+
+        System.out.println("\nSystem ready for further operations...");
     }
 }

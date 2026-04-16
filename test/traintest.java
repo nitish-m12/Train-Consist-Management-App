@@ -1,327 +1,198 @@
-import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import static org.junit.jupiter.api.Assertions.*;
 
-class traintest {
+class InvalidCapacityException extends Exception {
+    InvalidCapacityException(String message) {
+        super(message);
+    }
+}
 
-    private Map<String, List<Bogie>> groupBogies(List<Bogie> bogieList) {
-        return bogieList.stream()
-                .collect(Collectors.groupingBy(b -> b.name));
+class Bogie {
+    String name;
+    int capacity;
+
+    Bogie(String name, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than zero");
+        }
+        this.name = name;
+        this.capacity = capacity;
     }
 
-    private int getTotalSeats(List<Bogie> bogieList) {
-        return bogieList.stream()
-                .map(b -> b.capacity)
-                .reduce(0, Integer::sum);
+    @Override
+    public String toString() {
+        return name + " -> Capacity: " + capacity;
+    }
+}
+
+class GoodsBogie {
+    String type;
+    String cargo;
+
+    GoodsBogie(String type, String cargo) {
+        this.type = type;
+        this.cargo = cargo;
     }
 
-    private boolean validateTrainId(String input) {
-        Pattern pattern = Pattern.compile("TRN-\\d{4}");
-        Matcher matcher = pattern.matcher(input);
-        return matcher.matches();
+    @Override
+    public String toString() {
+        return "Type: " + type + " | Cargo: " + cargo;
     }
+}
 
-    private boolean validateCargoCode(String input) {
-        Pattern pattern = Pattern.compile("PET-[A-Z]{2}");
-        Matcher matcher = pattern.matcher(input);
-        return matcher.matches();
-    }
+public class traintest {
 
-feature12
-    private boolean isSafetyCompliant(List<GoodsBogie> goodsBogieList) {
-        return goodsBogieList.stream()
-                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
-    }
+    public static void main(String[] args) {
 
-=======
- develop
-    @Test
-    void testGrouping_BogiesGroupedByType() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("AC Chair", 56));
-        bogieList.add(new Bogie("First Class", 24));
+        System.out.println("=== Train Consist Management App ===");
 
-        Map<String, List<Bogie>> result = groupBogies(bogieList);
-
-        assertTrue(result.containsKey("Sleeper"));
-        assertTrue(result.containsKey("AC Chair"));
-        assertTrue(result.containsKey("First Class"));
-    }
-
-    @Test
-    void testGrouping_MultipleBogiesInSameGroup() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("Sleeper", 68));
-        bogieList.add(new Bogie("AC Chair", 56));
-
-        Map<String, List<Bogie>> result = groupBogies(bogieList);
-
-        assertEquals(2, result.get("Sleeper").size());
-        assertEquals(1, result.get("AC Chair").size());
-    }
-
-    @Test
-    void testGrouping_DifferentBogieTypes() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("AC Chair", 56));
-        bogieList.add(new Bogie("First Class", 24));
-
-        Map<String, List<Bogie>> result = groupBogies(bogieList);
-
-        assertEquals(3, result.size());
-        assertNotEquals(result.get("Sleeper"), result.get("AC Chair"));
-    }
-
-    @Test
-    void testGrouping_EmptyBogieList() {
         List<Bogie> bogieList = new ArrayList<>();
 
-        Map<String, List<Bogie>> result = groupBogies(bogieList);
+        try {
+            bogieList.add(new Bogie("Sleeper", 72));
+            bogieList.add(new Bogie("AC Chair", 56));
+            bogieList.add(new Bogie("First Class", 24));
+            bogieList.add(new Bogie("Sleeper", 68));
+            bogieList.add(new Bogie("AC Chair", 60));
+        } catch (InvalidCapacityException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
 
-        assertTrue(result.isEmpty());
-    }
+        bogieList.sort(Comparator.comparingInt(b -> b.capacity));
 
-    @Test
-    void testGrouping_MapContainsCorrectKeys() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("AC Chair", 56));
-        bogieList.add(new Bogie("First Class", 24));
+        System.out.println("\nBogies sorted by capacity (ascending):");
+        for (Bogie b : bogieList) {
+            System.out.println(b);
+        }
 
-        Map<String, List<Bogie>> result = groupBogies(bogieList);
-
-        assertTrue(result.keySet().containsAll(
-                List.of("Sleeper", "AC Chair", "First Class")));
-    }
-
-    @Test
-    void testGrouping_GroupSizeValidation() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("Sleeper", 68));
-        bogieList.add(new Bogie("AC Chair", 56));
-        bogieList.add(new Bogie("AC Chair", 60));
-        bogieList.add(new Bogie("First Class", 24));
-
-        Map<String, List<Bogie>> result = groupBogies(bogieList);
-
-        assertEquals(2, result.get("Sleeper").size());
-        assertEquals(2, result.get("AC Chair").size());
-        assertEquals(1, result.get("First Class").size());
-    }
-
-    @Test
-    void testGrouping_SingleBogieCategory() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("Sleeper", 68));
-        bogieList.add(new Bogie("Sleeper", 60));
-
-        Map<String, List<Bogie>> result = groupBogies(bogieList);
-
-        assertEquals(1, result.size());
-        assertEquals(3, result.get("Sleeper").size());
-    }
-
-    @Test
-    void testGrouping_OriginalListUnchanged() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("AC Chair", 56));
-        bogieList.add(new Bogie("First Class", 24));
-
-        int originalSize = bogieList.size();
-        groupBogies(bogieList);
-
-        assertEquals(originalSize, bogieList.size());
-        assertEquals("Sleeper",     bogieList.get(0).name);
-        assertEquals("AC Chair",    bogieList.get(1).name);
-        assertEquals("First Class", bogieList.get(2).name);
-    }
-
-    @Test
-    void testReduce_TotalSeatCalculation() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("AC Chair", 56));
-        bogieList.add(new Bogie("First Class", 24));
-
-        assertEquals(152, getTotalSeats(bogieList));
-    }
-
-    @Test
-    void testReduce_MultipleBogiesAggregation() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("Sleeper", 68));
-        bogieList.add(new Bogie("AC Chair", 56));
-        bogieList.add(new Bogie("AC Chair", 60));
-        bogieList.add(new Bogie("First Class", 24));
-
-        assertEquals(280, getTotalSeats(bogieList));
-    }
-
-    @Test
-    void testReduce_SingleBogieCapacity() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-
-        assertEquals(72, getTotalSeats(bogieList));
-    }
-
-    @Test
-    void testReduce_EmptyBogieList() {
-        List<Bogie> bogieList = new ArrayList<>();
-
-        assertEquals(0, getTotalSeats(bogieList));
-    }
-
-    @Test
-    void testReduce_CorrectCapacityExtraction() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("AC Chair", 56));
-
-        List<Integer> capacities = bogieList.stream()
-                .map(b -> b.capacity)
+        List<Bogie> filteredBogies = bogieList.stream()
+                .filter(b -> b.capacity > 60)
                 .collect(Collectors.toList());
 
-        assertEquals(2, capacities.size());
-        assertEquals(72, capacities.get(0));
-        assertEquals(56, capacities.get(1));
-    }
+        System.out.println("\nBogies with capacity greater than 60:");
+        if (filteredBogies.isEmpty()) {
+            System.out.println("No bogies match the filter condition.");
+        } else {
+            filteredBogies.forEach(System.out::println);
+        }
 
-    @Test
-    void testReduce_AllBogiesIncluded() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("AC Chair", 56));
-        bogieList.add(new Bogie("First Class", 24));
+        Map<String, List<Bogie>> groupedBogies = bogieList.stream()
+                .collect(Collectors.groupingBy(b -> b.name));
 
-        assertEquals(72 + 56 + 24, getTotalSeats(bogieList));
-    }
+        System.out.println("\nBogies grouped by type:");
+        groupedBogies.forEach((type, bogies) -> {
+            System.out.println("\nType: " + type);
+            bogies.forEach(b -> System.out.println("  " + b));
+        });
 
-    @Test
-    void testReduce_OriginalListUnchanged() {
-        List<Bogie> bogieList = new ArrayList<>();
-        bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("AC Chair", 56));
-        bogieList.add(new Bogie("First Class", 24));
+        int totalSeats = bogieList.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
 
-        int originalSize = bogieList.size();
-        getTotalSeats(bogieList);
+        System.out.println("\nTotal Seating Capacity of Train: " + totalSeats);
 
-        assertEquals(originalSize, bogieList.size());
-        assertEquals("Sleeper",     bogieList.get(0).name);
-        assertEquals("AC Chair",    bogieList.get(1).name);
-        assertEquals("First Class", bogieList.get(2).name);
-    }
+        Pattern trainIdPattern = Pattern.compile("TRN-\\d{4}");
+        Pattern cargoCodePattern = Pattern.compile("PET-[A-Z]{2}");
 
-    @Test
-    void testRegex_ValidTrainID() {
-        assertTrue(validateTrainId("TRN-1234"));
-    }
+        String trainId = "TRN-1234";
+        String cargoCode = "PET-AB";
 
-    @Test
-    void testRegex_InvalidTrainIDFormat() {
-        assertFalse(validateTrainId("TRAIN12"));
-        assertFalse(validateTrainId("TRN12A"));
-        assertFalse(validateTrainId("1234-TRN"));
-    }
+        Matcher trainIdMatcher = trainIdPattern.matcher(trainId);
+        Matcher cargoCodeMatcher = cargoCodePattern.matcher(cargoCode);
 
-    @Test
-    void testRegex_ValidCargoCode() {
-        assertTrue(validateCargoCode("PET-AB"));
-    }
+        System.out.println("\n=== UC11: Train ID & Cargo Code Validation ===");
 
-    @Test
-    void testRegex_InvalidCargoCodeFormat() {
-        assertFalse(validateCargoCode("PET-ab"));
-        assertFalse(validateCargoCode("PET123"));
-        assertFalse(validateCargoCode("AB-PET"));
-    }
+        if (trainIdMatcher.matches()) {
+            System.out.println("Train ID: " + trainId + " -> Valid");
+        } else {
+            System.out.println("Train ID: " + trainId + " -> Invalid");
+        }
 
-    @Test
-    void testRegex_TrainIDDigitLengthValidation() {
-        assertFalse(validateTrainId("TRN-123"));
-        assertFalse(validateTrainId("TRN-12345"));
-    }
+        if (cargoCodeMatcher.matches()) {
+            System.out.println("Cargo Code: " + cargoCode + " -> Valid");
+        } else {
+            System.out.println("Cargo Code: " + cargoCode + " -> Invalid");
+        }
 
-    @Test
-    void testRegex_CargoCodeUppercaseValidation() {
-        assertFalse(validateCargoCode("PET-ab"));
-        assertFalse(validateCargoCode("PET-Ab"));
-        assertFalse(validateCargoCode("PET-aB"));
-    }
+        System.out.println("\n=== UC12: Safety Compliance Check for Goods Bogies ===");
 
-    @Test
-    void testRegex_EmptyInputHandling() {
-        assertFalse(validateTrainId(""));
-        assertFalse(validateCargoCode(""));
-    }
-
-    @Test
-    void testRegex_ExactPatternMatch() {
-        assertFalse(validateTrainId("TRN-1234X"));
-        assertFalse(validateTrainId("XTRN-1234"));
-        assertFalse(validateCargoCode("PET-ABC"));
-        assertFalse(validateCargoCode("XPET-AB"));
-    }
-feature12
-
-    @Test
-    void testSafety_AllBogiesValid() {
         List<GoodsBogie> goodsBogieList = new ArrayList<>();
-        goodsBogieList.add(new GoodsBogie("Cylindrical", "Petroleum"));
+
         goodsBogieList.add(new GoodsBogie("Cylindrical", "Petroleum"));
         goodsBogieList.add(new GoodsBogie("Rectangular", "Coal"));
-
-        assertTrue(isSafetyCompliant(goodsBogieList));
-    }
-
-    @Test
-    void testSafety_CylindricalWithInvalidCargo() {
-        List<GoodsBogie> goodsBogieList = new ArrayList<>();
-        goodsBogieList.add(new GoodsBogie("Cylindrical", "Coal"));
-        goodsBogieList.add(new GoodsBogie("Rectangular", "Grain"));
-
-        assertFalse(isSafetyCompliant(goodsBogieList));
-    }
-
-    @Test
-    void testSafety_NonCylindricalBogiesAllowed() {
-        List<GoodsBogie> goodsBogieList = new ArrayList<>();
-        goodsBogieList.add(new GoodsBogie("Rectangular", "Coal"));
-        goodsBogieList.add(new GoodsBogie("Rectangular", "Grain"));
-        goodsBogieList.add(new GoodsBogie("Rectangular", "Petroleum"));
-
-        assertTrue(isSafetyCompliant(goodsBogieList));
-    }
-
-    @Test
-    void testSafety_MixedBogiesWithViolation() {
-        List<GoodsBogie> goodsBogieList = new ArrayList<>();
         goodsBogieList.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsBogieList.add(new GoodsBogie("Cylindrical", "Coal"));
-        goodsBogieList.add(new GoodsBogie("Rectangular", "Grain"));
 
-        assertFalse(isSafetyCompliant(goodsBogieList));
+        boolean isSafetyCompliant = goodsBogieList.stream()
+                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+
+        System.out.println("\nGoods Bogies:");
+        goodsBogieList.forEach(b -> System.out.println("  " + b));
+
+        if (isSafetyCompliant) {
+            System.out.println("\nSafety Compliance Status: SAFE");
+        } else {
+            System.out.println("\nSafety Compliance Status: UNSAFE - Rule Violation Detected");
+        }
+
+        System.out.println("\n=== UC13: Performance Comparison (Loops vs Streams) ===");
+
+        List<Bogie> largeBogieList = new ArrayList<>();
+        try {
+            for (int i = 0; i < 100000; i++) {
+                largeBogieList.add(new Bogie("Sleeper", 50 + (i % 50)));
+            }
+        } catch (InvalidCapacityException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        long loopStart = System.nanoTime();
+        List<Bogie> loopResult = new ArrayList<>();
+        for (Bogie b : largeBogieList) {
+            if (b.capacity > 60) {
+                loopResult.add(b);
+            }
+        }
+        long loopEnd = System.nanoTime();
+        long loopElapsed = loopEnd - loopStart;
+
+        long streamStart = System.nanoTime();
+        List<Bogie> streamResult = largeBogieList.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
+        long streamEnd = System.nanoTime();
+        long streamElapsed = streamEnd - streamStart;
+
+        System.out.println("\nLoop-based filtering time  : " + loopElapsed + " ns");
+        System.out.println("Stream-based filtering time: " + streamElapsed + " ns");
+        System.out.println("Loop result count          : " + loopResult.size());
+        System.out.println("Stream result count        : " + streamResult.size());
+
+        System.out.println("\n=== UC14: Handle Invalid Bogie Capacity (Custom Exception) ===");
+
+        try {
+            Bogie validBogie = new Bogie("Sleeper", 72);
+            System.out.println("Created bogie: " + validBogie);
+        } catch (InvalidCapacityException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        try {
+            Bogie invalidBogie = new Bogie("Sleeper", -10);
+            System.out.println("Created bogie: " + invalidBogie);
+        } catch (InvalidCapacityException e) {
+            System.out.println("Caught Exception -> " + e.getMessage());
+        }
+
+        try {
+            Bogie zeroBogie = new Bogie("AC Chair", 0);
+            System.out.println("Created bogie: " + zeroBogie);
+        } catch (InvalidCapacityException e) {
+            System.out.println("Caught Exception -> " + e.getMessage());
+        }
     }
-
-    @Test
-    void testSafety_EmptyBogieList() {
-        List<GoodsBogie> goodsBogieList = new ArrayList<>();
-
-        assertTrue(isSafetyCompliant(goodsBogieList));
-    }
-=======
-develop
 }

@@ -142,12 +142,17 @@ public class TrainManagement {
         System.out.println("\n=== UC13: Performance Comparison (Loops vs Streams) ===");
 
         List<Bogie> largeBogieList = new ArrayList<>();
+feature14
         try {
             for (int i = 0; i < 100000; i++) {
                 largeBogieList.add(new Bogie("Sleeper", 50 + (i % 50)));
             }
         } catch (InvalidCapacityException e) {
             System.out.println("Error: " + e.getMessage());
+=======
+        for (int i = 0; i < 100000; i++) {
+            largeBogieList.add(new Bogie("Sleeper", 50 + (i % 50)));
+develop
         }
 
         long loopStart = System.nanoTime();
@@ -171,6 +176,7 @@ public class TrainManagement {
         System.out.println("Stream-based filtering time: " + streamElapsed + " ns");
         System.out.println("Loop result count          : " + loopResult.size());
         System.out.println("Stream result count        : " + streamResult.size());
+ feature14
 
         System.out.println("\n=== UC14: Handle Invalid Bogie Capacity (Custom Exception) ===");
 
@@ -194,5 +200,7 @@ public class TrainManagement {
         } catch (InvalidCapacityException e) {
             System.out.println("Caught Exception -> " + e.getMessage());
         }
+=======
+develop
     }
 }

@@ -3,6 +3,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 class Bogie {
     String name;
@@ -19,7 +21,22 @@ class Bogie {
     }
 }
 
-public class TrainManagement {
+class GoodsBogie {
+    String type;
+    String cargo;
+
+    GoodsBogie(String type, String cargo) {
+        this.type = type;
+        this.cargo = cargo;
+    }
+
+    @Override
+    public String toString() {
+        return "Type: " + type + " | Cargo: " + cargo;
+    }
+}
+
+public class TrainManagement{
 
     public static void main(String[] args) {
 
@@ -65,5 +82,48 @@ public class TrainManagement {
                 .reduce(0, Integer::sum);
 
         System.out.println("\nTotal Seating Capacity of Train: " + totalSeats);
+
+        Pattern trainIdPattern = Pattern.compile("TRN-\\d{4}");
+        Pattern cargoCodePattern = Pattern.compile("PET-[A-Z]{2}");
+
+        String trainId = "TRN-1234";
+        String cargoCode = "PET-AB";
+
+        Matcher trainIdMatcher = trainIdPattern.matcher(trainId);
+        Matcher cargoCodeMatcher = cargoCodePattern.matcher(cargoCode);
+
+        System.out.println("\n=== UC11: Train ID & Cargo Code Validation ===");
+
+        if (trainIdMatcher.matches()) {
+            System.out.println("Train ID: " + trainId + " -> Valid");
+        } else {
+            System.out.println("Train ID: " + trainId + " -> Invalid");
+        }
+
+        if (cargoCodeMatcher.matches()) {
+            System.out.println("Cargo Code: " + cargoCode + " -> Valid");
+        } else {
+            System.out.println("Cargo Code: " + cargoCode + " -> Invalid");
+        }
+
+        System.out.println("\n=== UC12: Safety Compliance Check for Goods Bogies ===");
+
+        List<GoodsBogie> goodsBogieList = new ArrayList<>();
+
+        goodsBogieList.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        goodsBogieList.add(new GoodsBogie("Rectangular", "Coal"));
+        goodsBogieList.add(new GoodsBogie("Cylindrical", "Petroleum"));
+
+        boolean isSafetyCompliant = goodsBogieList.stream()
+                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+
+        System.out.println("\nGoods Bogies:");
+        goodsBogieList.forEach(b -> System.out.println("  " + b));
+
+        if (isSafetyCompliant) {
+            System.out.println("\nSafety Compliance Status: SAFE");
+        } else {
+            System.out.println("\nSafety Compliance Status: UNSAFE - Rule Violation Detected");
+        }
     }
 }

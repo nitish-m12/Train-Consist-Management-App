@@ -105,6 +105,7 @@ public class TrainManagement{
         } else {
             System.out.println("Cargo Code: " + cargoCode + " -> Invalid");
         }
+ feature12
 
         System.out.println("\n=== UC12: Safety Compliance Check for Goods Bogies ===");
 
@@ -125,5 +126,7 @@ public class TrainManagement{
         } else {
             System.out.println("\nSafety Compliance Status: UNSAFE - Rule Violation Detected");
         }
+=======
+develop
     }
 }

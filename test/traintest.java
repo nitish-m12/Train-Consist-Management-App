@@ -32,11 +32,14 @@ class traintest {
         return matcher.matches();
     }
 
+feature12
     private boolean isSafetyCompliant(List<GoodsBogie> goodsBogieList) {
         return goodsBogieList.stream()
                 .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
     }
 
+=======
+ develop
     @Test
     void testGrouping_BogiesGroupedByType() {
         List<Bogie> bogieList = new ArrayList<>();
@@ -272,6 +275,7 @@ class traintest {
         assertFalse(validateCargoCode("PET-ABC"));
         assertFalse(validateCargoCode("XPET-AB"));
     }
+feature12
 
     @Test
     void testSafety_AllBogiesValid() {
@@ -318,4 +322,6 @@ class traintest {
 
         assertTrue(isSafetyCompliant(goodsBogieList));
     }
+=======
+develop
 }

@@ -1,110 +1,69 @@
-/**
- * TrainManagement.java
- *
- * UC1 → UC7 Combined
- *
- * Description:
- * Demonstrates full Train Consist Management using:
- * - ArrayList, HashSet, LinkedList, LinkedHashSet, HashMap
- * - Custom Class (Bogie)
- * - Comparator sorting (based on capacity)
- *
- * Author: Nitish
- */
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import java.util.*;
+// Bogie class
+class Bogie {
+    String name;
+    int capacity;
+
+    // Constructor
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    // toString() for display
+    @Override
+    public String toString() {
+        return name + " -> Capacity: " + capacity;
+    }
+}
 
 public class TrainManagement {
 
-    // ================= UC7: Bogie Class =================
-    static class Bogie {
-        String name;
-        int capacity;
-
-        // Constructor
-        Bogie(String name, int capacity) {
-            this.name = name;
-            this.capacity = capacity;
-        }
-
-        // toString for printing
-        @Override
-        public String toString() {
-            return name + " (" + capacity + ")";
-        }
-    }
-
     public static void main(String[] args) {
 
-        // ================= UC1 =================
         System.out.println("=== Train Consist Management App ===");
 
-        List<String> trainConsist = new ArrayList<>();
-        System.out.println("Initial number of bogies: " + trainConsist.size());
+        // Create list of bogies (reused from UC7)
+        List<Bogie> bogieList = new ArrayList<>();
 
+        // Add passenger bogies
+        bogieList.add(new Bogie("Sleeper", 72));
+        bogieList.add(new Bogie("AC Chair", 56));
+        bogieList.add(new Bogie("First Class", 24));
 
-        // ================= UC2 =================
-        trainConsist.add("Sleeper");
-        trainConsist.add("AC Chair");
-        trainConsist.add("First Class");
-        trainConsist.remove("AC Chair");
+        // UC7: Sort bogies by capacity (ascending)
+        bogieList.sort(Comparator.comparingInt(b -> b.capacity));
 
-
-        // ================= UC3 =================
-        Set<String> bogieIds = new HashSet<>();
-        bogieIds.add("BG101");
-        bogieIds.add("BG101"); // duplicate ignored
-
-
-        // ================= UC4 =================
-        LinkedList<String> orderedTrain = new LinkedList<>();
-        orderedTrain.add("Engine");
-        orderedTrain.add("Sleeper");
-        orderedTrain.add("Cargo");
-        orderedTrain.add("Guard");
-
-
-        // ================= UC5 =================
-        Set<String> formation = new LinkedHashSet<>();
-        formation.add("Engine");
-        formation.add("Sleeper");
-        formation.add("Sleeper"); // duplicate ignored
-
-
-        // ================= UC6 =================
-        Map<String, Integer> bogieCapacity = new HashMap<>();
-        bogieCapacity.put("Sleeper", 72);
-        bogieCapacity.put("AC Chair", 50);
-        bogieCapacity.put("First Class", 24);
-
-
-        // ================= UC7 =================
-        System.out.println("\n--- Sorting Bogies by Capacity ---");
-
-        // Step 1: Create list of Bogie objects
-        List<Bogie> bogies = new ArrayList<>();
-
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 50));
-        bogies.add(new Bogie("First Class", 24));
-
-        // Step 2: Sort using Comparator (ascending order)
-        bogies.sort(Comparator.comparingInt(b -> b.capacity));
-
-        // Step 3: Display sorted bogies
-        System.out.println("Bogies sorted by capacity (ascending):");
-        for (Bogie b : bogies) {
+        // Display sorted bogies
+        System.out.println("\nBogies sorted by capacity (ascending):");
+        for (Bogie b : bogieList) {
             System.out.println(b);
         }
 
-        // Step 4: Sort in descending order (important for viva)
-        bogies.sort((a, b) -> b.capacity - a.capacity);
+        // UC8: Filter passenger bogies using Stream API
+        // Convert list to stream, apply filter, collect result into a new list
+        List<Bogie> filteredBogies = bogieList.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
 
-        System.out.println("\nBogies sorted by capacity (descending):");
-        for (Bogie b : bogies) {
+        // Display filtered bogies
+        System.out.println("\nBogies with capacity greater than 60:");
+        if (filteredBogies.isEmpty()) {
+            System.out.println("No bogies match the filter condition.");
+        } else {
+            filteredBogies.forEach(System.out::println);
+        }
+
+        // Verify original list is unchanged
+        System.out.println("\nOriginal bogie list (unchanged):");
+        for (Bogie b : bogieList) {
             System.out.println(b);
         }
 
-        System.out.println("\nSystem ready for further operations...");
+        // Program continues...
     }
 }
